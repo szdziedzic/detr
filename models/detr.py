@@ -123,7 +123,13 @@ class DETRMAE(nn.Module):
         self.bbox_embed = bbox_embed
         self.class_embed = class_embed
 
-        self.emb_linear = torch.nn.Linear(768, hidden_dim)
+        self.emb_linear = torch.nn.Sequential(
+            torch.nn.Linear(768, 768),
+            torch.nn.ReLU(),
+            torch.nn.Linear(768, 768),
+            torch.nn.ReLU(),
+            torch.nn.Linear(768, hidden_dim)
+        )
 
     def forward(self, samples: NestedTensor):
         if isinstance(samples, (list, torch.Tensor)):
