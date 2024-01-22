@@ -125,8 +125,6 @@ class DETRMAE(nn.Module):
         self.bbox_embed = bbox_embed
         self.class_embed = class_embed
 
-        self.encoder.config.mask_ratio = 0.50
-
         self.emb_linear = torch.nn.Sequential(
             nn.Linear(768, 768),
             nn.ReLU(),
