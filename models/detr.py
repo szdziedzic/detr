@@ -95,10 +95,11 @@ def get_detr_decoder_and_embedings(freeze: bool):
     return detr.transformer.decoder, detr.query_embed, detr.bbox_embed, detr.class_embed
 
 
-def get_mae_encoder():
+def get_mae_encoder(freeze: bool):
     encoder = ViTMAEModel.from_pretrained("facebook/vit-mae-base")
-    for param in encoder.parameters():
-        param.requires_grad = False
+    if freeze:
+        for param in encoder.parameters():
+            param.requires_grad = False
     return encoder
 
 
@@ -109,6 +110,7 @@ class DETRMAE(nn.Module):
         num_queries,
         freeze_pretrained_detr_params: bool,
         mask_ratio: float,
+        dont_freeze_pretrained_mae_params: bool,
         hidden_dim=256,
     ):
         super().__init__()
@@ -116,7 +118,7 @@ class DETRMAE(nn.Module):
         self.num_classes = num_classes
         self.num_queries = num_queries
 
-        self.encoder = get_mae_encoder()
+        self.encoder = get_mae_encoder(not dont_freeze_pretrained_mae_params)
         self.encoder.config.mask_ratio = mask_ratio
 
         decoder, query_embed, bbox_embed, class_embed = get_detr_decoder_and_embedings(freeze_pretrained_detr_params)
@@ -396,11 +398,14 @@ def build(args):
         print("using detrmae")
         if args.freeze_detrmae_pretrained_detr_params:
             print("freezing pretrained detr params")
+        if not args.dont_freeze_detrmae_pretrained_mae_params:
+            print("freezing pretrained mae params")
         model = DETRMAE(
             num_classes=num_classes,
             num_queries=args.num_queries,
             freeze_pretrained_detr_params=args.freeze_detrmae_pretrained_detr_params,
             mask_ratio=args.mask_ratio,
+            dont_freeze_pretrained_mae_params=args.dont_freeze_detrmae_pretrained_mae_params,
         )
     else:
         print("using detr")

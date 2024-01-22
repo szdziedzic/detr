@@ -105,6 +105,7 @@ def get_args_parser():
     parser.add_argument("--detr_variant", default="detr", choices=['detr', 'detrmae'])
     parser.add_argument("--freeze_detrmae_pretrained_detr_params", type=bool, default=False)
     parser.add_argument("--mask_ratio", type=float, default=0.75)
+    parser.add_argument("--dont_freeze_detrmae_pretrained_mae_params", type=bool, default=False)
 
     # wandb
     parser.add_argument("--no_wandb", type=bool, default=False)
