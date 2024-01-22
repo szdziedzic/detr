@@ -104,6 +104,7 @@ def get_args_parser():
     parser.add_argument("--detr_variant", default="detr", choices=['detr', 'detrmae'])
     parser.add_argument("--freeze_detrmae_pretrained_detr_params", type=bool, default=False)
     parser.add_argument("--how_many", type=int, default=1)
+    parser.add_argument("--mask_ratio", type=float, default=0.75)
     return parser
 
 
